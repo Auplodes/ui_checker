@@ -2,82 +2,82 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>FF Max UI - Exact Color Render Pro</title>
+    <title>FF Max UI - 100% Exact Theme Render</title>
     <style>
-        :root { --menu-accent: #ff4655; --bg-main: rgba(15, 15, 18, 0.98); }
-        body { background: #08080a; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .container { display: flex; width: 98vw; height: 92vh; gap: 10px; }
+        :root {
+            --win-bg: #15151b;
+            --win-border: #ff4655;
+            --win-text: #ffffff;
+            --item-accent: #ff4655;
+        }
+        body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .container { display: flex; width: 98vw; height: 90vh; gap: 10px; }
         
-        /* Editor Section */
         .editor { flex: 1; display: flex; flex-direction: column; }
         textarea { flex: 1; background: #111; color: #00ff88; border: 1px solid #333; border-radius: 8px; padding: 12px; font-family: 'Consolas', monospace; font-size: 11px; outline: none; }
 
-        /* Preview Section */
-        .preview { flex: 1.2; background: #000; border: 1px solid #222; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; }
+        .preview { flex: 1.3; background: #000; border: 1px solid #222; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; }
         #canvas-frame { 
-            position: relative; width: 800px; height: 450px; 
+            position: relative; width: 854px; height: 480px; 
             background: url('https://w0.peakpx.com/wallpaper/74/451/HD-wallpaper-garena-free-fire-max-thumbnail.jpg') center/cover;
             display: flex; align-items: center; justify-content: center; 
         }
 
-        /* DYNAMIC IMGUI WINDOW */
+        /* REAL IMGUI STRUCTURE */
         #imgui-win {
-            width: 300px; background: var(--bg-main); border: 1.5px solid var(--menu-accent);
-            border-radius: 10px; display: none; flex-direction: column; box-shadow: 0 0 25px #000;
+            width: 380px; min-height: 250px; max-height: 90%;
+            background: var(--win-bg); border: 2px solid var(--win-border);
+            border-radius: 8px; display: none; flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); overflow: hidden;
+            color: var(--win-text);
         }
 
-        .win-header { 
-            padding: 8px; text-align: center; font-weight: 800; font-size: 13px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--menu-accent);
-        }
+        .win-header { padding: 6px 12px; font-weight: bold; font-size: 14px; border-bottom: 1px solid rgba(128,128,128,0.2); text-align: center; }
 
-        /* Indian Flag Theme Sections */
-        .flag-bg { position: absolute; inset: 0; z-index: -1; display: flex; flex-direction: column; opacity: 0.2; }
-        .flag-saffron { flex: 1; background: rgb(255, 153, 51); }
-        .flag-white { flex: 1; background: #fff; display: flex; align-items: center; justify-content: center; }
-        .flag-green { flex: 1; background: rgb(18, 136, 7); }
-        .chakra { width: 40px; height: 40px; border: 2px dashed navy; border-radius: 50%; }
+        .win-main { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Sidebar/Tabs Logic */
+        .win-sidebar { width: 100px; background: rgba(0,0,0,0.1); border-right: 1px solid rgba(128,128,128,0.2); display: flex; flex-direction: column; }
+        .tab-btn { padding: 10px; font-size: 11px; text-align: center; border-bottom: 1px solid rgba(128,128,128,0.1); opacity: 0.7; }
+        .tab-active { opacity: 1; background: rgba(255,255,255,0.05); border-left: 3px solid var(--item-accent); }
 
-        .win-body { padding: 10px; position: relative; z-index: 1; }
-        .item-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: bold; }
-        .chk-box { width: 14px; height: 14px; border: 1.5px solid var(--menu-accent); margin-right: 10px; position: relative; }
-        .chk-box.checked::after { content: '✔'; position: absolute; left: 1px; top: -3px; color: var(--menu-accent); font-size: 11px; }
+        .win-content { flex: 1; padding: 10px; overflow-y: auto; }
 
-        .slider-bar { width: 100%; height: 10px; background: #222; margin-top: 3px; position: relative; }
-        .slider-fill { width: 50%; height: 100%; background: var(--menu-accent); }
+        /* Elements */
+        .item-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 12px; }
+        .chk-box { width: 15px; height: 15px; border: 1.5px solid var(--item-accent); margin-right: 10px; position: relative; }
+        .chk-box.on::after { content: '✔'; position: absolute; left: 2px; top: -2px; color: var(--item-accent); font-size: 12px; }
 
-        .text-line { text-align: center; margin: 8px 0; font-size: 11px; letter-spacing: 0.5px; }
+        .slider-bg { height: 12px; background: rgba(128,128,128,0.2); margin: 4px 0 10px 0; border-radius: 2px; }
+        .slider-fill { width: 55%; height: 100%; background: var(--item-accent); border-radius: 2px; }
 
-        /* Buttons */
         .controls { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-red { background: #ff4655; color: #fff; }
-        .btn-gray { background: #222; color: #fff; border: 1px solid #444; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-update { background: #28a745; color: white; }
+        .btn-download { background: #007bff; color: white; }
     </style>
 </head>
 <body>
 
-    <h3 style="margin: 5px; color: #ff4655;">FF MAX UI <span style="color:#fff">EXACT COLOR RENDERER</span></h3>
+    <h3 style="margin: 5px;">FF MAX UI <span style="color:#ff4655">ULTRA RENDER</span></h3>
 
     <div class="container">
         <div class="editor">
-            <textarea id="codeSource" placeholder="Paste C++ Code here..."></textarea>
+            <textarea id="cppInput" placeholder="Pura layout.h ya .cpp code yahan paste karein..."></textarea>
             <div class="controls">
-                <button class="btn btn-red" onclick="renderUI()">RENDER UI</button>
-                <button class="btn btn-gray" onclick="downloadPNG()">DOWNLOAD PNG</button>
+                <button class="btn btn-update" onclick="renderExactUI()">RENDER FULL UI</button>
+                <button class="btn btn-download" onclick="takeShot()">DOWNLOAD IMAGE</button>
             </div>
         </div>
 
         <div class="preview">
             <div id="canvas-frame">
                 <div id="imgui-win">
-                    <div class="flag-bg" id="flag-layer" style="display:none;">
-                        <div class="flag-saffron"></div>
-                        <div class="flag-white"><div class="chakra"></div></div>
-                        <div class="flag-green"></div>
+                    <div class="win-header" id="ui-title">MOD MENU</div>
+                    <div class="win-main">
+                        <div class="win-sidebar" id="ui-tabs"></div>
+                        <div class="win-content" id="ui-body"></div>
                     </div>
-                    <div class="win-header" id="win-title">MOD MENU</div>
-                    <div class="win-body" id="win-content"></div>
                 </div>
             </div>
         </div>
@@ -85,72 +85,84 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        function parseColor(str) {
-            // Regex to find IM_COL32(255, 153, 51, 255) or ImVec4(1, 0, 0, 1)
-            const imCol = str.match(/IM_COL32\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-            if (imCol) return `rgb(${imCol[1]}, ${imCol[2]}, ${imCol[3]})`;
-            
-            const imVec = str.match(/ImVec4\s*\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)/);
-            if (imVec) return `rgb(${imVec[1]*255}, ${imVec[2]*255}, ${imVec[3]*255})`;
-            
+        function parseImColor(code, key) {
+            const reg = new RegExp(`\\[${key}\\]\\s*=\\s*ImVec4\\s*\\(\\s*([0-9.]+)\\s*f?\\s*,\\s*([0-9.]+)\\s*f?\\s*,\\s*([0-9.]+)\\s*f?`);
+            const match = code.match(reg);
+            if(match) return `rgb(${match[1]*255}, ${match[2]*255}, ${match[3]*255})`;
             return null;
         }
 
-        function renderUI() {
-            const code = document.getElementById('codeSource').value;
-            const content = document.getElementById('win-content');
-            const title = document.getElementById('win-title');
+        function renderExactUI() {
+            const code = document.getElementById('cppInput').value;
+            const body = document.getElementById('ui-body');
+            const tabs = document.getElementById('ui-tabs');
+            const title = document.getElementById('ui-title');
             const win = document.getElementById('imgui-win');
-            const flag = document.getElementById('flag-layer');
 
-            if(!code) return alert("Please paste code first!");
-
-            content.innerHTML = '';
+            if(!code) return alert("Code paste karein!");
+            
             win.style.display = 'flex';
+            body.innerHTML = '';
+            tabs.innerHTML = '';
 
-            // 1. Detect Header Color from style.Colors[ImGuiCol_Button]
-            const accentColor = parseColor(code) || "#ff4655";
-            document.documentElement.style.setProperty('--menu-accent', accentColor);
+            // 1. DYNAMIC COLOR DETECTION (White, Dark, or Custom)
+            const bgColor = parseImColor(code, "ImGuiCol_WindowBg") || "#15151b";
+            const textColor = parseImColor(code, "ImGuiCol_Text") || "#ffffff";
+            const borderColor = parseImColor(code, "ImGuiCol_Border") || parseImColor(code, "ImGuiCol_CheckMark") || "#ff4655";
 
-            // 2. Title extraction
+            document.documentElement.style.setProperty('--win-bg', bgColor);
+            document.documentElement.style.setProperty('--win-text', textColor);
+            document.documentElement.style.setProperty('--win-border', borderColor);
+            document.documentElement.style.setProperty('--item-accent', borderColor);
+
+            // 2. TITLE
             const titleMatch = code.match(/"([^"]+)"/);
-            if(titleMatch) title.innerText = titleMatch[1].replace(/##/g, '');
+            if(titleMatch) title.innerText = titleMatch[1].replace(/##/g, '').trim();
 
-            // 3. Indian Theme Logic
-            if(code.includes("AddRectFilled") || code.includes("IndianTheme")) {
-                flag.style.display = 'flex';
-            }
-
+            // 3. TABS & CONTENT SCANNING
             const lines = code.split('\n');
+            let tabCount = 0;
+
             lines.forEach(line => {
                 const labelMatch = line.match(/"([^"]+)"/);
                 const label = labelMatch ? labelMatch[1].split('##')[0] : null;
 
-                // Checkbox & Custom Checkbox
-                if(line.includes("Checkbox") || line.includes("Zxcmukku")) {
-                    content.innerHTML += `<div class="item-row"><div class="chk-box checked"></div><span>${label}</span></div>`;
+                // Detect Tabs (Selectable or Tab Item)
+                if(line.includes("Selectable") || line.includes("selected_tab ==")) {
+                    if(label && tabCount < 4) {
+                        tabs.innerHTML += `<div class="tab-btn ${tabCount === 0 ? 'tab-active' : ''}">${label}</div>`;
+                        tabCount++;
+                    }
                 }
-                // TextColored or Banner Text
-                else if(line.includes("TextColored") || line.includes("!!")) {
-                    const textColor = parseColor(line) || accentColor;
-                    content.innerHTML += `<div class="text-line" style="color:${textColor}">${label || line.match(/!!(.*?)!!/)?.[0] || ""}</div>`;
+
+                // Detect Checkboxes (Aimkill, Aimbot, etc.)
+                if(line.includes("Checkbox") || line.includes("Zxcmukku") || line.includes("MyCustomCheckbox")) {
+                    if(label) {
+                        body.innerHTML += `<div class="item-row"><div class="chk-box on"></div><span>${label}</span></div>`;
+                    }
                 }
-                // Slider Logic
-                else if(line.includes("Slider")) {
-                    content.innerHTML += `<div style="margin-bottom:10px;"><span style="font-size:10px;">${label}</span><div class="slider-bar"><div class="slider-fill"></div></div></div>`;
+
+                // Detect Sliders (FOV, etc.)
+                if(line.includes("Slider")) {
+                    if(label) {
+                        body.innerHTML += `<div><span style="font-size:11px;">${label}</span><div class="slider-bg"><div class="slider-fill"></div></div></div>`;
+                    }
                 }
-                // Separator
-                else if(line.includes("Separator")) {
-                    content.innerHTML += `<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:5px 0;">`;
+
+                // Detect Headers (>>>>)
+                if(line.includes(">>>>") || line.includes("TextColored")) {
+                    if(label) body.innerHTML += `<div style="color:var(--item-accent); font-weight:bold; font-size:11px; margin:10px 0; text-align:center;">${label}</div>`;
                 }
             });
+
+            if(body.innerHTML === "") body.innerHTML = "<p style='font-size:12px; opacity:0.5;'>Features yahan dikhenge...</p>";
         }
 
-        function downloadPNG() {
+        function takeShot() {
             const frame = document.getElementById('canvas-frame');
             html2canvas(frame, { scale: 3 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'FF_MOD_MENU_FINAL.png';
+                link.download = 'FF_UI_EXACT_RENDER.png';
                 link.href = canvas.toDataURL();
                 link.click();
             });
@@ -158,4 +170,3 @@
     </script>
 </body>
 </html>
-
